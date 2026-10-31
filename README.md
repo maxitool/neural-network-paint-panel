@@ -46,24 +46,24 @@ graph TD
     classDef special fill:#FFEBEE,stroke:#C62828,stroke-width:2px;
 
     %% Схема конвейера
-    In([Входной битмап: Матрица 64x64x1]):::input
+    In([Входной битмап:<br>Матрица 64x64x1]):::input
     
     Main[Главный классификатор <br><b>Main.h5</b><br>Предсказание групп 0-53]:::process
     
-    Check{get_results_NN<br>Список групп по порогу p >= 0.2}:::condition
+    Check{get_results_NN<br>Список групп по<br>порогу p >= 0.2}:::condition
     
     SecNet["Вторичные классификаторы<br><b>Weights/{group_number}.h5</b>"]:::process
     
-    CheckSec{get_results_NN<br>Порог кандзи p >= 0.5}:::condition
+    CheckSec{get_results_NN<br>Порог кандзи<br>p >= 0.5}:::condition
     
-    Res1[Успешно определен символ кандзи]:::output
-    Res2["Иероглиф мапится в кандзи '一'"]:::output
+    Res1[Успешно определен<br>символ кандзи]:::output
+    Res2["Иероглиф мапится<br>в кандзи '一'"]:::output
     
-    OutStr[Накопление символов в строку ответов: list_kanji]:::process
+    OutStr[Накопление символов<br>в строку ответов:<br>list_kanji]:::process
     
-    CheckFinal{list_kanji пустая?}:::condition
+    CheckFinal{list_kanji<br>пустая?}:::condition
     ErrorOutput(["Возврат символа '?'"]):::special
-    End([Показ изображения с кандзи]):::input
+    End([Показ изображения<br>с кандзи]):::input
 
     %% Связи и ветвление
     In --> Main
