@@ -36,6 +36,59 @@
 2.  **Второстепенные классификаторы (`Weights/{group_number}.h5`):** Если главная сеть определила группу (от 0 до 52), динамически подгружаются веса соответствующей узкой подсети для вычисления точного кандзи с порогом вероятности \(p \ge 0.55\).
 3.  **Исключение (Группа 53):** Если главный классификатор относит рисунок к группе `53`, система автоматически идентифицирует простейший иероглиф «一» (одна черта), минуя инференс вторичных сетей, и сразу отображает финальный результат (`i512.png`).
 
+```mermaid
+graph TD
+    %% Стилизация узлов
+    classDef input fill:#E3F2FD,stroke:#1565C0,stroke-width:2px;
+    classDef process fill:#FFF3E0,stroke:#EF6C00,stroke-width:2px;
+    classDef condition fill:#EDE7F6,stroke:#5E35B1,stroke-width:2px;
+    classDef output fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px;
+    classDef special fill:#FFEBEE,stroke:#C62828,stroke-width:2px;
+
+    %% Схема конвейера
+    In([Входной битмап: Матрица 64x64x1]):::input
+    
+    Main[Главный классификатор <br><b>Main.h5</b><br>Предсказание групп 0-53]:::process
+    
+    Check{get_results_NN<br>Список групп по порогу p >= 0.2}:::condition
+    
+    SecNet["Вторичные классификаторы<br><b>Weights/{group_number}.h5</b>"]:::process
+    
+    CheckSec{get_results_NN<br>Порог кандзи p >= 0.5}:::condition
+    
+    Res1[Успешно определен символ кандзи]:::output
+    Res2["Иероглиф мапится в кандзи '一'"]:::output
+    
+    OutStr[Накопление символов в строку ответов: list_kanji]:::process
+    
+    CheckFinal{list_kanji пустая?}:::condition
+    ErrorOutput(["Возврат символа '?'"]):::special
+    End([Отправка list_kanji клиенту]):::input
+
+    %% Связи и ветвление
+    In --> Main
+    Main --> Check
+    
+    Check -- "Изначально список пуст" --> ErrorOutput
+    Check -- "Номера групп 0 - 52<br>[Итерация в цикле]" --> SecNet
+    Check -- "Номер группы 53" --> Res2
+    
+    SecNet --> CheckSec
+    
+    CheckSec -- "Успех (Символ найден)" --> Res1
+    CheckSec -- "Не определен / Возврат '?'" --> OutStr
+    
+    Res1 --> OutStr
+    Res2 --> OutStr
+    
+    OutStr --> CheckFinal
+    
+    CheckFinal -- "Да" --> ErrorOutput
+    CheckFinal -- "Нет (Есть символы)" --> End
+    ErrorOutput --> End
+
+```
+
 ### Топология сверточной сети (Keras Sequential)
 Каждая нейросеть (как главная, так и 53 вторичных) имеет идентичную однородную структуру, оптимизированную под бинарные контурные изображения:
 
