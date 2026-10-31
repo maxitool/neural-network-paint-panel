@@ -57,9 +57,9 @@ graph TD
     CheckSec{get_results_NN<br>Порог кандзи<br>p >= 0.5}:::condition
     
     Res1[Успешно<br>определен<br>символ кандзи]:::output
-    Res2["Иероглиф мапится<br>в кандзи '一'"]:::output
+    Res2["Иероглиф<br>мапится<br>в кандзи '一'"]:::output
     
-    OutStr[Накопление символов<br>в строку ответов:<br>list_kanji]:::process
+    OutStr[Накопление символов<br>в строку<br>ответов:<br>list_kanji]:::process
     
     CheckFinal{list_kanji<br>пустая?}:::condition
     ErrorOutput(["Возврат<br>символа '?'"]):::special
