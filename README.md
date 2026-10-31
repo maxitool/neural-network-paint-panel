@@ -85,7 +85,6 @@ graph TD
     
     CheckFinal -- "Да" --> ErrorOutput
     CheckFinal -- "Нет (Есть символы)" --> End
-    ErrorOutput --> End
 
 ```
 
