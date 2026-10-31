@@ -63,7 +63,7 @@ graph TD
     
     CheckFinal{list_kanji пустая?}:::condition
     ErrorOutput(["Возврат символа '?'"]):::special
-    End([Отправка list_kanji клиенту]):::input
+    End([Показ изображения с кандзи]):::input
 
     %% Связи и ветвление
     In --> Main
